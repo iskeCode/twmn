@@ -670,10 +670,14 @@ void Widget::setupContent()
         QString text = (m.data["icon"] && !m.data["title"] ? " " : "") + m.data["content"]->toString() + " ";
         foreach (QString i, QStringList() << "\n" << "\r" << "<br/>" << "<br />")
             text.replace(i, " ");
+        int pos = 0, rest = text.size();
         int max_length = m_settings.get("gui/max_length").toInt();
-        if (max_length != -1 && text.size() >= max_length) {
-            text.resize(max_length);
-            text.append("...");
+        if (max_length != -1) {
+	    while (rest >= max_length) {
+		pos += max_length;
+                text.insert(pos, '\n');
+		rest -= max_length;
+	    }
         }
         m_contentView["text"]->setText(text);
         m_contentView["text"]->setMaximumWidth(9999);
